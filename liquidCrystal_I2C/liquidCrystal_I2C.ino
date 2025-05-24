@@ -9,7 +9,6 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 //VCC must be 5v
 //GND in GND
 
-
 void setup() {
   lcd.init();             // Initialize LCD
   lcd.backlight();        // Turn on backlightz
@@ -37,3 +36,4 @@ lcd.write(byte(0));  // Show custom char
 void loop() {
   // You can animate or update here later
 }
+

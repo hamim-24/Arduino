@@ -1,5 +1,5 @@
-#define TRIG_PIN 9 //set Trig 
-#define ECHO_PIN 10//set Echo
+#define TRIG_PIN 8 //set Trig 
+#define ECHO_PIN 7//set Echo
 
 void setup() {
   Serial.begin(9600);//set Serial monitor(9600)
