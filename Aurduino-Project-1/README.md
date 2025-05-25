@@ -75,3 +75,4 @@ RFID RC522
 
 Compile and upload code. You must connect with laptop while processing. Open the serial monitor(9600). Enter password in the monitor. The command will also show in the serial monitor.
 
+video link : https://www.linkedin.com/feed/update/urn:li:activity:7332448839280316416/
