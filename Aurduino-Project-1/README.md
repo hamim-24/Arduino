@@ -1,5 +1,5 @@
 
-# Gate Security System
+# Smart Access & Detection System using Arduino
 
 In this project we will make a autometic gate that can track object and ask for scanner card and then password. If both are correct then it opens the gate for 5 seconds
 
