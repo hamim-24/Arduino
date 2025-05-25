@@ -25,7 +25,7 @@ In this project we will make a autometic gate that can track object and ask for 
 
 
 ## Library
-- SPI.h 
+- SPI.h (for RFID)
 - MFRC522.h (for RFID)
 - Servo.h (for Servo)
 - Wire.h (for lcd)
