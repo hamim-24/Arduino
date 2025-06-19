@@ -10,10 +10,10 @@ void setup() {
   lcd.backlight();    
 
   lcd.setCursor(0, 0);
-  lcd.print("ESP32 + LCD 😎");
+  lcd.print("ESP32 + LCD");
 
   lcd.setCursor(0, 1);
-  lcd.print("Working Bro 🔥");
+  lcd.print("Working Bro");
 }
 
 void loop() {
