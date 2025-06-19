@@ -41,3 +41,15 @@ Control your ESP32-connected LED (or any GPIO device) from anywhere in the world
 - Add a **button widget** and assign it to GPIO (like D2 or D5)
 
 ---
+# Configuration
+Update
+```cpp
+#define BLYNK_TEMPLATE_ID ""
+#define BLYNK_TEMPLATE_NAME ""
+#define BLYNK_AUTH_TOKEN ""
+```
+ssid for Wifi name and pass for password
+```cpp
+char ssid[] = "";
+char pass[] = "";
+ ```
