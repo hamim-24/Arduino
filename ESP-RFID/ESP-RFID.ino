@@ -3,15 +3,7 @@
 
 #define RST_PIN 4    // Reset pin
 #define SS_PIN  5    // Slave select (SDA)
-/*
-VCC-3.3V (not 5v)
-GND-GND
-RST-GPIO 4
-SDA (SS)-GPIO 5
-SCK-GPIO 18
-MOSI-GPIO 23
-MISO-GPIO 19
-*/
+
 MFRC522 mfrc522(SS_PIN, RST_PIN);
 
 void setup() {
