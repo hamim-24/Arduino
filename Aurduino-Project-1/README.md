@@ -94,14 +94,14 @@ You can easily customize the following parameters in the code:
 *   **Allowed RFID Card UID:**
     *   To find the UID of your RFID card, uncomment the `showUID()` function call in `loop()` temporarily, upload the code, and scan your card. The UID will be printed to the Serial Monitor.
     *   Update the `allowedCard` variable in the code with your card's UID:
-        \`\`\`cpp
+        ```cpp
         MFRC522::Uid allowedCard = { 4, { 0xXX, 0xXX, 0xXX, 0xXX }, 0 }; // Replace XX with your UID bytes
-        \`\`\`
+        ```
 *   **Password:**
     *   Change the `correctPwd` variable to your desired password:
-        \`\`\`cpp
+        ```cpp
         String correctPwd = "your_new_password";
-        \`\`\`
+        ```
 *   **Ultrasonic Detection Distance:**
     *   Modify the `20` in `if (measureDistance() < 20)` within the `detectObject()` function to change the detection threshold in centimeters.
 *   **Servo Positions:**
