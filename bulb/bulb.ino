@@ -1,4 +1,4 @@
-#define pin 13
+#define pin 2
 void setup() {
   pinMode(pin, OUTPUT);
 }
