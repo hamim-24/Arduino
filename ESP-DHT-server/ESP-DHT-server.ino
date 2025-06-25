@@ -94,7 +94,7 @@ float readDHTTemperature() {
     return -1;
   }
   else {
-    Serial.println(t);
+    //Serial.println(t);
     return t;
   }
 }
@@ -107,7 +107,7 @@ float readDHTHumidity() {
     return -1;
   }
   else {
-    Serial.println(h);
+    //Serial.println(h);
     return h;
   }
 }
