@@ -58,25 +58,25 @@ This project uses the following pin assignments on the ESP32:
 
 2.  **Configure WiFi Credentials:**
     *   In the provided Arduino sketch, update the `ssid` and `password` variables with your local WiFi network's credentials:
-    \`\`\`cpp
+    ```cpp
     String ssid = "YOUR_WIFI_SSID";
     String password = "YOUR_WIFI_PASSWORD";
-    \`\`\`
+    ```
 
 3.  **Assign Device Names and Peer IPs:**
     *   You will need two ESP32 devices. For each device, modify the `myName` and `peerIP` variables:
 
     **For ESP32 Device A:**
-    \`\`\`cpp
+    ```cpp
     String myName = "A";
     const char* peerIP = "192.168.0.104"; // <-- Set this to the expected IP of ESP32 Device B
-    \`\`\`
+    ```
 
     **For ESP32 Device B:**
-    \`\`\`cpp
+    ```cpp
     String myName = "B";
     const char* peerIP = "192.168.0.103"; // <-- Set this to the expected IP of ESP32 Device A
-    \`\`\`
+    ```
     **Important:** You need to know the IP addresses your router assigns to your ESP32s. You can find this by uploading the code to one ESP32, opening the Serial Monitor, and noting the "Connected. IP:" address. Then, update the `peerIP` on the other device accordingly.
 
 4.  **Upload Code:**
