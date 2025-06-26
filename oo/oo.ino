@@ -1,55 +1,55 @@
 #include <WiFi.h>
 
-// 🧠 SET DIFFERENT IPs FOR EACH DEVICE
-String ssid = "Harrenhal";
-String password = "flat_6b@";
+const char* ssid = "Harrenhal";
+const char* password = "flat_6b@";
 
-// SET THIS TO THE OTHER ESP32's IP
-const char* peerIP = "192.168.0.105";  // <-- change this on each ESP
+String inputIP = "";
 
-WiFiServer server(80);
-String myName = "ESP32-A";  // <-- change to ESP32-B on the second device
+bool isDeviceAlive(IPAddress ip) {
+  WiFiClient client;
+  const int ports[] = {80, 443, 22}; // Try HTTP, HTTPS, SSH
+  for (int i = 0; i < 3; i++) {
+    if (client.connect(ip, ports[i])) {
+      client.stop();
+      return true;
+    }
+    delay(100); // Short delay between attempts
+  }
+  return false;
+}
 
 void setup() {
   Serial.begin(115200);
   WiFi.begin(ssid, password);
 
-  Serial.print("Connecting to WiFi(" + ssid + ")");
+  Serial.print("🔗 Connecting to WiFi");
   while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
     Serial.print(".");
-    delay(10);
   }
-
-  Serial.print("\nConnected. IP: ");
-  Serial.println(WiFi.localIP());
-  
-
-  server.begin();
-  Serial.println("\n\n  " + myName);
-  Serial.println("===========");
-  Serial.println("Ready to chat...\nWrite something:");
+  Serial.println("\n✅ Connected to WiFi!");
+  Serial.println("💡 Enter a local IP (e.g., 192.168.0.105):");
 }
 
 void loop() {
-  WiFiClient incoming = server.available();
-  if (incoming) {
-    String msg = incoming.readStringUntil('\n');
-    if (msg.length() > 0) {
-      Serial.print("Message from ");
-      Serial.println(msg);
-    }
-    incoming.stop();
-  }
-
   if (Serial.available()) {
-    String outMsg = Serial.readStringUntil('\n');
-    WiFiClient client;
-    if (client.connect(peerIP, 80)) {
-      client.println(myName + ": " + outMsg);
-      client.stop();
-      Serial.println("Sent: " + outMsg);
+    inputIP = Serial.readStringUntil('\n');
+    inputIP.trim();
+
+    IPAddress ip;
+    if (ip.fromString(inputIP)) {
+      Serial.print("🔍 Checking IP: ");
+      Serial.println(ip);
+
+      if (isDeviceAlive(ip)) {
+        Serial.println("✅ Device is alive on the network.");
+      } else {
+        Serial.println("❌ Device not found or no open ports.");
+      }
     } else {
-      Serial.println("Failed to send message");
+      Serial.println("🚫 Invalid IP format.");
     }
+
+    Serial.println("\n💡 Enter another IP to check:");
   }
 }

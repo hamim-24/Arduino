@@ -1,55 +1,47 @@
 #include <WiFi.h>
 
-// 🧠 SET DIFFERENT IPs FOR EACH DEVICE
-String ssid = "Harrenhal";
-String password = "flat_6b@";
+const char* ssid = "Harrenhal";
+const char* password = "flat_6b@";
 
-// SET THIS TO THE OTHER ESP32's IP
-const char* peerIP = "192.168.0.106";  // <-- change this on each ESP
-
-WiFiServer server(80);
-String myName = "ESP32-B";  // <-- change to ESP32-B on the second device
+String inputIP = "";
 
 void setup() {
   Serial.begin(115200);
   WiFi.begin(ssid, password);
-
-  Serial.print("Connecting to WiFi(" + ssid + ")");
-  while (WiFi.status() != WL_CONNECTED) {
-    Serial.print(".");
-    delay(10);
-  }
-
-  Serial.print("\nConnected. IP: ");
-  Serial.println(WiFi.localIP());
   
-
-  server.begin();
-  Serial.println("\n\n  " + myName);
-  Serial.println("===========");
-  Serial.println("Ready to chat...\nWrite something:");
+  Serial.println("Connecting to WiFi");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("\nWiFi Connected ✅");
+  Serial.println(WiFi.localIP());
+  Serial.println("Enter an IP to check:");
 }
 
 void loop() {
-  WiFiClient incoming = server.available();
-  if (incoming) {
-    String msg = incoming.readStringUntil('\n');
-    if (msg.length() > 0) {
-      Serial.print("Message from ");
-      Serial.println(msg);
-    }
-    incoming.stop();
-  }
-
   if (Serial.available()) {
-    String outMsg = Serial.readStringUntil('\n');
-    WiFiClient client;
-    if (client.connect(peerIP, 80)) {
-      client.println(myName + ": " + outMsg);
-      client.stop();
-      Serial.println("Sent: " + outMsg);
+    inputIP = Serial.readStringUntil('\n');
+    inputIP.trim();
+
+    IPAddress ip;
+    if (ip.fromString(inputIP)) {
+      Serial.print("Checking IP: ");
+      Serial.println(ip);
+
+      WiFiClient client;
+
+      // Try connecting to port 80 (HTTP)
+      if (client.connect(ip, 80)) {
+        Serial.println("✅ IP is online (port 80 reachable).");
+        client.stop();
+      } else {
+        Serial.println("❌ IP is unreachable or port is closed.");
+      }
     } else {
-      Serial.println("Failed to send message");
+      Serial.println("⚠️ Invalid IP format.");
     }
+
+    Serial.println("\nEnter another IP to check:");
   }
 }
