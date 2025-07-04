@@ -85,7 +85,7 @@ void loop() {
       digitalWrite(redLed, HIGH);
       delay(500);
       digitalWrite(redLed, LOW);
-
+      
       lcd.clear();
       lcd.setCursor(0, 0);
       lcd.print("In:");
