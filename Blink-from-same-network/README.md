@@ -50,7 +50,7 @@ This project allows you to control two LEDs using your **ESP32 board** as a **Wi
 
 - ESP32 starts in **SoftAP** mode (Access Point).
 - It runs a web server on port `80`.
-- Client connects to Wi-Fi and navigates to `192.168.4.1`.
+- Client connects to Wi-Fi and navigates to (Ex: `192.168.4.1`).
 - Web page displays two LED toggle buttons.
 - HTTP GET requests control the GPIOs.
 
