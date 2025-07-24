@@ -27,7 +27,7 @@ This project turns your **ESP32** into a local web server that shows **Temperatu
 |----------|------------|
 | VCC      | 3.3V       |
 | GND      | GND        |
-| DATA     | GPIO 26    |
+| DATA     | GPIO 22    |
 
 > You can change the pin in the code using: `DHT dht(26, DHT11);`
 
