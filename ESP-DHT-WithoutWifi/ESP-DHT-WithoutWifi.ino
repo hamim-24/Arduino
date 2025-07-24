@@ -6,9 +6,8 @@ const char* ssid = "ESP32-DHT";
 const char* password = "12345678"; // At least 8 chars
 
 WebServer server(80);
-DHT dht(26, DHT11);
+DHT dht(22, DHT11);
 
-int pin = 4;
 
 void handleRoot() {
   char msg[1500];
@@ -52,7 +51,6 @@ void handleRoot() {
 void setup() {
   Serial.begin(115200);
   dht.begin();
-  pinMode(pin, OUTPUT);
 
   // Start in Access Point (AP) mode
   WiFi.softAP(ssid, password);
