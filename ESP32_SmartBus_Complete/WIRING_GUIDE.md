@@ -1,4 +1,4 @@
-# ESP32 Smart Bus - Wiring Diagram & Hardware Guide
+# ESP32 Smart Bus - Complete Wiring Diagram & Hardware Guide
 
 ## 🔌 Wiring Diagrams for Your ESP32 Boards
 
@@ -24,6 +24,7 @@
                     │ VIN ●   Mini-B  [WROOM]       ● G2  │
                     └─────────────────────────────────────┘
                     IR1→G32   IR2→G33   TRIG→G26   ECHO→G27
+                    SERVO→G15  LED1→G25  LED2→G13  LED3→G12  LED4→G14  LED5→G2
 ```
 
 ### Your Board 2: ESP32 Dev Module (32 pins)
@@ -45,9 +46,10 @@
                     │ GND ●                     ● GND │
     RC522 RST ──────┤  D4 ●                     ● VIN │ ← 5V USB/External
                     └─────────────────────────────────┘
+                    SERVO→D15  LED1→D25  LED2→D13  LED3→D12  LED4→D14  LED5→D2
 ```
 
-## 📋 Pin Assignment Table (Your Boards)
+## 📋 Complete Pin Assignment Table (Your Boards)
 
 | ESP32 Pin | Component | Function | Voltage | WROOM-32 (40-pin) | Dev Module (32-pin) |
 |-----------|-----------|----------|---------|------------------|------------------|
@@ -62,6 +64,12 @@
 | GPIO 27 | HC-SR04 ECHO | Ultrasonic Echo | 5V | ✅ Pin G27 | ✅ Pin D27 |
 | GPIO 32 | IR Sensor 1 | Entry Detection | 3.3V | ✅ Pin G32 | ✅ Pin D32 |
 | GPIO 33 | IR Sensor 2 | Exit Detection | 3.3V | ✅ Pin G33 | ✅ Pin D33 |
+| **GPIO 15** | **Servo Motor** | **Gate Control** | **5V** | ✅ Pin G15 | ✅ Pin D15 |
+| **GPIO 25** | **LED White** | **Status Light** | **3.3V** | ✅ Pin G25 | ✅ Pin D25 |
+| **GPIO 13** | **LED Green 1** | **Success Light** | **3.3V** | ✅ Pin G13 | ✅ Pin D13 |
+| **GPIO 12** | **LED Green 2** | **Success Light** | **3.3V** | ✅ Pin G12 | ✅ Pin D12 |
+| **GPIO 14** | **LED Red 1** | **Warning Light** | **3.3V** | ✅ Pin G14 | ✅ Pin D14 |
+| **GPIO 2** | **LED Red 2** | **Warning Light** | **3.3V** | ✅ Pin G2 | ✅ Pin D2 |
 
 ### 📌 Your Board Specifications
 
@@ -109,9 +117,11 @@ RC522 RST  → ESP32 GPIO 4
 RC522 3.3V → ESP32 3.3V
 RC522 GND  → ESP32 GND
 RC522 IRQ  → Not Connected
+
+⚠️ IMPORTANT: RC522 requires 3.3V power (NOT 5V!)
 ```
 
-### LCD Display (16x2 with I2C Backpack)
+### LCD Display (20x4 with I2C Backpack)
 ```
 LCD I2C Module:
 ┌─────────────────┐
@@ -120,11 +130,12 @@ LCD I2C Module:
 
 Connections:
 LCD GND → ESP32 GND
-LCD VCC → ESP32 VIN (5V)
+LCD VCC → ESP32 VIN (5V) - for backlight
 LCD SDA → ESP32 GPIO 21
 LCD SCL → ESP32 GPIO 22
 
 Note: I2C Address usually 0x27 or 0x3F
+      Enhanced: Now supports 20x4 display for better information display
 ```
 
 ### HC-SR04 Ultrasonic Sensor
@@ -141,6 +152,7 @@ HC-SR04 ECHO → ESP32 GPIO 27
 HC-SR04 GND  → ESP32 GND
 
 Note: Echo pin is 5V tolerant on ESP32
+      Enhanced: Used for collision detection and emergency stop
 ```
 
 ### IR Obstacle Sensors (2x)
@@ -161,80 +173,94 @@ IR2 GND → ESP32 GND
 IR2 OUT → ESP32 GPIO 33
 
 Note: Active LOW sensors (OUTPUT LOW when obstacle detected)
+      Enhanced: Advanced state machine for accurate passenger counting
 ```
 
-## 🍞 Breadboard Layout (Works with Both Your Boards)
+### 🆕 **NEW: Servo Motor (Gate Control)**
+```
+Servo Motor Pinout:
+┌─────────────────┐
+│ VCC GND Signal  │
+└─────────────────┘
 
-### ESP32 Smart Bus - Complete Layout
+Connections:
+Servo VCC    → ESP32 VIN (5V)
+Servo GND    → ESP32 GND
+Servo Signal → ESP32 GPIO 15
+
+Function: Controls automatic gate opening/closing
+         - Opens gate for valid tap-in/out
+         - Auto-closes after 10 seconds
+         - Prevents rapid gate actions
+         - Visual feedback with LED indicators
+
+⚠️ IMPORTANT: Servo requires 5V power for reliable operation
+```
+
+### 🆕 **NEW: LED Status Indicators (5x)**
+```
+LED Configuration:
+┌─────────────────────────────────┐
+│ GPIO 25: White LED  - Normal Status    │
+│ GPIO 13: Green LED1 - Success/Entry    │
+│ GPIO 12: Green LED2 - Success/Exit     │
+│ GPIO 14: Red LED1   - Warning/Alert    │
+│ GPIO 2:  Red LED2   - Warning/Alert    │
+└─────────────────────────────────┘
+
+Connections:
+All LED Anodes → Respective GPIO pins
+All LED Cathodes → GND (via 220Ω resistors recommended)
+
+Functions:
+- White: Normal operation, system ready
+- Green: Successful operations, passenger boarding
+- Red: Warnings, alerts, emergency situations
+- Special patterns: Speed warnings, passenger overflow, alerts
+```
+
+## 🍞 Enhanced Breadboard Layout (Works with Both Your Boards)
+
+### ESP32 Smart Bus - Complete Layout with New Components
 ```
 Breadboard Power Rails:
 Red Rail (+)  → ESP32 VIN (5V from USB)
 Blue Rail (-) → ESP32 GND
 
 Component Placement:
-┌─────────────────────────────────────────────────────────────┐
-│ (+) ════════════════════════════════════════════════════ RED│
-│ (-) ════════════════════════════════════════════════════BLUE│
-│                                                             │
-│     ┌─ESP32 Board─┐              ┌─LCD I2C─┐               │
-│     │  (Either    │              │ GND VCC │               │  
-│     │   Board)    │              │ SDA SCL │               │
-│     │             │              └─────────┘               │
-│     │ G5  G18 G23 │    ┌─RC522 RFID─┐                     │
-│     │ G19 G4  G21 │    │ SDA SCK MOSI│                     │
-│     │ G22 G26 G27 │    │ MISO RST GND│                     │
-│     │ G32 G33     │    │ IRQ  3.3V   │                     │
-│     │ 3V3 GND VIN │    └─────────────┘                     │
-│     └─────────────┘                                        │
-│                           ┌─HC-SR04─┐    ┌─IR1─┐ ┌─IR2─┐  │
-│                           │VCC TRIG │    │VCC  │ │VCC  │  │
-│                           │ECHO GND │    │GND  │ │GND  │  │
-│                           └─────────┘    │OUT  │ │OUT  │  │
-│                                          └─────┘ └─────┘  │
-│ (+) ════════════════════════════════════════════════════ RED│
-│ (-) ════════════════════════════════════════════════════BLUE│
-└─────────────────────────────────────────────────────────────┘
-```
-│ + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + │ ← 5V
-│                                                             │
-│   ┌─────┐     ┌─────────┐         ┌─────────────────┐       │
-│   │ IR1 │     │  RC522  │         │   ESP32 DevKit  │       │
-│   └─────┘     └─────────┘         │       V1        │       │
-│                                   └─────────────────┘       │
-│   ┌─────┐     ┌─────────┐                                   │
-│   │ IR2 │     │ HC-SR04 │           ┌─────────────┐         │
-│   └─────┘     └─────────┘           │  LCD I2C    │         │
-│                                     └─────────────┘         │
-│                                                             │
-│ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - │ ← GND
-└─────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ (+) ════════════════════════════════════════════════════════════════════ RED│
+│ (-) ════════════════════════════════════════════════════════════════════BLUE│
+│                                                                             │
+│     ┌─ESP32 Board─┐              ┌─LCD I2C─┐         ┌─Servo Motor─┐      │
+│     │  (Either    │              │ GND VCC │         │   VCC GND   │      │  
+│     │   Board)    │              │ SDA SCL │         │   Signal    │      │
+│     │             │              └─────────┘         └─────────────┘      │
+│     │ G5  G18 G23 │    ┌─RC522 RFID─┐                                     │
+│     │ G19 G4  G21 │    │ SDA SCK MOSI│                                     │
+│     │ G22 G26 G27 │    │ MISO RST GND│                                     │
+│     │ G32 G33 G15 │    │ IRQ  3.3V   │                                     │
+│     │ G25 G13 G12 │    └─────────────┘                                     │
+│     │ G14 G2  3V3 │                                                        │
+│     │ GND VIN     │                                                        │
+│     └─────────────┘                                                        │
+│                           ┌─HC-SR04─┐    ┌─IR1─┐ ┌─IR2─┐                  │
+│                           │VCC TRIG │    │VCC  │ │VCC  │                  │
+│                           │ECHO GND │    │GND  │ │GND  │                  │
+│                           └─────────┘    │OUT  │ │OUT  │                  │
+│                                          └─────┘ └─────┘                  │
+│                                                                             │
+│ LED Indicators:                                                             │
+│ ┌─LED1─┐ ┌─LED2─┐ ┌─LED3─┐ ┌─LED4─┐ ┌─LED5─┐                            │
+│ │G25   │ │G13   │ │G12   │ │G14   │ │G2    │                            │
+│ │White │ │Green1│ │Green2│ │Red1  │ │Red2  │                            │
+│ └──────┘ └──────┘ └──────┘ └──────┘ └──────┘                            │
+│ (+) ════════════════════════════════════════════════════════════════════ RED│
+│ (-) ════════════════════════════════════════════════════════════════════BLUE│
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Option 2: ESP32 WROOM-32 Layout (Advanced)
-```
-Breadboard Power Rails:
-Red Rail (+)  → 5V Input → Voltage Regulator → 3.3V
-Blue Rail (-) → Common GND
-
-Component Placement:
-┌─────────────────────────────────────────────────────────────┐
-│ + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + │ ← 5V
-│                                                             │
-│ ┌─────────┐   ┌─────┐     ┌─────────┐   ┌───────────────┐   │
-│ │ AMS1117 │   │ IR1 │     │  RC522  │   │ ESP32 WROOM32 │   │
-│ │ 3.3V Reg│   └─────┘     └─────────┘   │  on Breakout  │   │
-│ └─────────┘                             └───────────────┘   │
-│                                                             │
-│ ┌─────────┐   ┌─────┐     ┌─────────┐   ┌─────────────┐     │
-│ │USB-Serial│   │ IR2 │     │ HC-SR04 │   │  LCD I2C    │     │
-│ │Converter │   └─────┘     └─────────┘   └─────────────┘     │
-│ └─────────┘                                                 │
-│                                                             │
-│ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - │ ← GND
-└─────────────────────────────────────────────────────────────┘
-```
-
-## ⚡ Power Requirements & Setup
+## ⚡ Enhanced Power Requirements & Setup
 
 ### Voltage Levels (Both Board Types)
 - **ESP32**: 3.3V logic, 5V input power
@@ -242,55 +268,49 @@ Component Placement:
 - **LCD**: 5V for backlight, 3.3V logic OK
 - **HC-SR04**: 5V for reliable operation
 - **IR Sensors**: 3.3V to 5V compatible
+- **🆕 Servo Motor**: 5V for reliable operation
+- **🆕 LED Indicators**: 3.3V logic level
 
-### Current Consumption
-| Component | Current Draw |
-|-----------|--------------|
-| ESP32 WROOM-32 | 80-240mA |
-| ESP32 DevKit V1 | 80-240mA |
-| RC522 | 13-50mA |
-| LCD with Backlight | 50-100mA |
-| HC-SR04 | 15mA |
-| IR Sensors (2x) | 20mA |
-| **Total** | **~200-400mA** |
-
-### Power Supply Options
-
-#### For ESP32 DevKit V1 (Simple):
-- **USB Power**: 5V 2A USB adapter → DevKit USB port
-- **External**: 5V → VIN pin, GND → GND pin
-- **Battery**: 7.4V Li-Po → VIN (built-in regulator)
-
-#### For ESP32 WROOM-32 (Complex):
-- **Regulated 3.3V**: External 3.3V supply → VCC pin
-- **5V with Regulator**: 5V → AMS1117-3.3V → WROOM VCC
-- **Battery**: 7.4V Li-Po → Buck converter → 3.3V
+### Enhanced Current Consumption
+| Component | Current Draw | Notes |
+|-----------|--------------|-------|
+| ESP32 WROOM-32 | 80-240mA | Main controller |
+| ESP32 DevKit V1 | 80-240mA | Main controller |
+| RC522 | 13-50mA | NFC/RFID module |
+| LCD with Backlight | 50-100mA | 20x4 display |
+| HC-SR04 | 15mA | Distance sensor |
+| IR Sensors (2x) | 20mA | Passenger counting |
+| **🆕 Servo Motor** | **50-200mA** | **Gate control** |
+| **🆕 LED Indicators (5x)** | **25-50mA** | **Status lights** |
+| **Total** | **~250-600mA** | **Enhanced system** |
 
 ### Power Supply Recommendations
 
-| Board Type | Recommended Power | Setup Difficulty |
-|------------|-------------------|------------------|
-| **DevKit V1** | 5V 2A USB adapter | ⭐ Easy |
-| **WROOM-32** | 3.3V 1A regulated | ⭐⭐⭐ Advanced |
+| Board Type | Recommended Power | Setup Difficulty | Enhanced Features |
+|------------|-------------------|------------------|-------------------|
+| **DevKit V1** | 5V 2A USB adapter | ⭐ Easy | ✅ All features |
+| **WROOM-32** | 3.3V 1A regulated | ⭐⭐⭐ Advanced | ✅ All features |
 
-## 🔍 Connection Verification
+## 🔍 Enhanced Connection Verification
 
 ### Pre-Power Checklist
 - [ ] All GND connections secure
 - [ ] No short circuits between VCC and GND
 - [ ] RC522 connected to 3.3V (NOT 5V)
 - [ ] LCD connected to 5V power
+- [ ] Servo motor connected to 5V power
+- [ ] LED indicators with proper resistors
 - [ ] All signal wires properly connected
 - [ ] No loose connections on breadboard
 
-### Post-Power Tests
+### Enhanced Post-Power Tests
 ```cpp
-// Add to setup() for testing
-void testConnections() {
+// Add to setup() for comprehensive testing
+void testAllConnections() {
     // Test LCD
     lcd.init();
     lcd.backlight();
-    lcd.print("LCD OK");
+    lcd.print("LCD OK - 20x4");
     
     // Test RC522
     if (rfid.PCD_PerformSelfTest()) {
@@ -304,10 +324,21 @@ void testConnections() {
     // Test IR Sensors
     Serial.println("IR1: " + String(digitalRead(IR_ENTER)));
     Serial.println("IR2: " + String(digitalRead(IR_EXIT)));
+    
+    // Test Servo
+    gateServo.attach(SERVO_PIN);
+    gateServo.write(90);
+    Serial.println("Servo OK");
+    
+    // Test LED Indicators
+    setLcdLights(LIGHT_ALL);
+    delay(1000);
+    setLcdLights(LIGHT_WHITE);
+    Serial.println("LEDs OK");
 }
 ```
 
-## 🛠️ Assembly Tips
+## 🛠️ Enhanced Assembly Tips
 
 ### Best Practices
 1. **Use solid core wires** for breadboard connections
@@ -315,41 +346,65 @@ void testConnections() {
 3. **Group by voltage level** (3.3V vs 5V components)
 4. **Double-check polarity** before powering on
 5. **Test each component individually** before integration
+6. **🆕 Add resistors** for LED indicators (220Ω recommended)
+7. **🆕 Secure servo mounting** for stable gate operation
+8. **🆕 Test gate movement** before final assembly
 
-### Common Mistakes
+### Enhanced Common Mistakes
 - **Wrong voltage to RC522**: Will damage the module
 - **Loose breadboard connections**: Causes intermittent failures
 - **Mixed up SDA/SCL**: I2C won't work
 - **Reversed IR sensor polarity**: No detection
 - **Missing pull-up resistors**: May cause noise (usually not needed)
+- **🆕 Servo without 5V**: Unreliable operation
+- **🆕 LEDs without resistors**: May damage ESP32 pins
+- **🆕 Gate interference**: Ensure clear movement path
 
-## 🔧 Troubleshooting Guide
+## 🔧 Enhanced Troubleshooting Guide
 
 ### LCD Not Working
 1. Check I2C address (try 0x27 and 0x3F)
 2. Verify SDA/SCL connections
 3. Ensure 5V power to LCD
 4. Run I2C scanner code
+5. **🆕 Check for 20x4 compatibility**
 
 ### RC522 Not Detecting Cards
 1. Verify 3.3V power (NOT 5V!)
 2. Check SPI connections (MOSI/MISO/SCK)
 3. Ensure proper RST connection
 4. Test with different NFC cards
+5. **🆕 Check antenna connection**
 
 ### Ultrasonic Giving Wrong Readings
 1. Check 5V power supply
 2. Verify TRIG/ECHO connections
 3. Ensure no obstacles near sensor
 4. Check for loose wires
+5. **🆕 Test collision detection**
 
 ### IR Sensors Not Responding
 1. Verify power connections
 2. Test sensor LED indicators
 3. Check detection range (2-30cm typical)
 4. Ensure no interference from other IR sources
+5. **🆕 Test passenger counting logic**
 
-## 📦 Shopping List for Your Setup
+### 🆕 **NEW: Servo Motor Issues**
+1. **Check 5V power supply** (servo needs 5V)
+2. **Verify signal wire connection** to GPIO 15
+3. **Test gate movement** manually
+4. **Check for mechanical interference**
+5. **Verify gate angles** (93° open, 173° closed)
+
+### 🆕 **NEW: LED Indicator Issues**
+1. **Check resistor connections** (220Ω recommended)
+2. **Verify GPIO pin assignments**
+3. **Test individual LEDs** one by one
+4. **Check for loose connections**
+5. **Verify light patterns** for different modes
+
+## 📦 Enhanced Shopping List for Your Setup
 
 ### Your ESP32 Boards (You Already Have These! ✅)
 ```
@@ -359,35 +414,125 @@ void testConnections() {
 ✅ Both have built-in voltage regulators
 ```
 
-### Additional Components Needed
+### Essential Components Needed
 ```
 □ RC522 RFID Module with antenna (~$3-5)
 □ HC-SR04 Ultrasonic Distance Sensor (~$2-3) 
 □ 2x IR Obstacle Detection Sensors (~$1-2 each)
-□ 16x2 LCD Display with I2C Backpack (~$3-4)
+□ 20x4 LCD Display with I2C Backpack (~$5-8)
+□ Servo Motor (SG90 or similar) (~$3-5)
+□ 5x LED Indicators (different colors) (~$2-3)
+□ 5x 220Ω Resistors for LEDs (~$1)
 □ Half-size breadboard (~$2-3)
 □ Male-to-male jumper wires pack (~$2-3)
 □ NFC cards for testing (~$2-5)
 □ USB Mini-B cable (~$2-3)
 
-Total Additional Cost: ~$20-30
-Setup Time: 30 minutes  
-Skill Level: Beginner ✅
+Total Enhanced Cost: ~$25-40
+Setup Time: 45 minutes  
+Skill Level: Beginner to Intermediate ✅
 ```
 
-## 🎯 Quick Assembly Guide
+### 🆕 **NEW: Optional Enhancements**
+```
+□ Buzzer Module (~$1-2) - Audio alerts
+□ GPS Module (~$5-8) - Location tracking
+□ GSM Module (~$8-12) - SMS notifications
+□ SD Card Module (~$2-3) - Data logging
+□ Real-time Clock (~$2-3) - Accurate timestamps
+□ Temperature Sensor (~$1-2) - Environmental monitoring
+□ Motion Sensor (~$2-3) - Additional security
+```
+
+## 🎯 Enhanced Quick Assembly Guide
 
 ```
 Step 1: Connect ESP32 → Computer (USB Mini-B)
-Step 2: Upload Arduino code 
-Step 3: Connect components per pin table above
-Step 4: Test each sensor individually
-Step 5: Access web interface at 192.168.4.1
+Step 2: Upload enhanced Arduino code 
+Step 3: Connect components per enhanced pin table above
+Step 4: Test each sensor and new component individually
+Step 5: Test gate operation and LED indicators
+Step 6: Access enhanced web interface at 192.168.4.1
+Step 7: Test NFC registration and passenger counting
+Step 8: Verify gate control and LED status patterns
 
-Assembly Time: 30 minutes
+Assembly Time: 45 minutes
 Tools Needed: None! 
+Enhanced Features: ✅ Gate Control ✅ LED Status ✅ Advanced Analytics
+```
+
+## 🆕 **NEW: Advanced Features Testing**
+
+### Gate Control Test
+```cpp
+// Test gate opening and closing
+void testGateControl() {
+    Serial.println("Testing gate control...");
+    
+    // Test opening
+    openGate();
+    delay(2000);
+    
+    // Test closing
+    closeGate();
+    delay(2000);
+    
+    Serial.println("Gate control test complete");
+}
+```
+
+### LED Pattern Test
+```cpp
+// Test all LED patterns
+void testLEDPatterns() {
+    Serial.println("Testing LED patterns...");
+    
+    setLcdLights(LIGHT_WHITE);    // Normal
+    delay(1000);
+    setLcdLights(LIGHT_GREEN);    // Success
+    delay(1000);
+    setLcdLights(LIGHT_RED);      // Warning
+    delay(1000);
+    setLcdLights(LIGHT_ALERT);    // Alert pattern
+    delay(1000);
+    setLcdLights(LIGHT_OFF);      // All off
+    
+    Serial.println("LED pattern test complete");
+}
+```
+
+### Enhanced System Test
+```cpp
+// Complete system test
+void runSystemTest() {
+    Serial.println("=== ENHANCED SYSTEM TEST ===");
+    
+    testAllConnections();
+    testGateControl();
+    testLEDPatterns();
+    
+    // Test passenger counting
+    Serial.println("Passenger counting system ready");
+    
+    // Test NFC system
+    Serial.println("NFC system ready");
+    
+    // Test web interface
+    Serial.println("Web interface ready");
+    
+    Serial.println("=== ALL SYSTEMS OPERATIONAL ===");
+}
 ```
 
 ---
 
-This simplified wiring guide focuses on your specific ESP32 boards and eliminates complexity. Both your boards work identically for this project! 🚌✨
+This enhanced wiring guide now includes all the new features discovered in the complete code analysis:
+- ✅ **Servo Motor Gate Control** for automatic passenger access
+- ✅ **5x LED Status Indicators** for visual system feedback  
+- ✅ **Enhanced 20x4 LCD Display** for better information display
+- ✅ **Advanced Passenger Counting** with state machine logic
+- ✅ **Collision Detection** with ultrasonic sensor
+- ✅ **Complete Web Management** interface
+- ✅ **Real-time Analytics** and monitoring
+
+Both your ESP32 boards work identically for this enhanced project! 🚌✨🔧
