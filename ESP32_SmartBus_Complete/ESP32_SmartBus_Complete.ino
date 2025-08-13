@@ -120,7 +120,6 @@
  bool gateOpen = false; // Gate starts CLOSED
  unsigned long lastGateAction = 0;
  const unsigned long GATE_ACTION_DELAY = 1000;     // 1 second delay between gate actions
- const unsigned long GATE_AUTO_CLOSE_TIME = 10000; // 10 seconds auto-close
  unsigned long gateOpenTime = 0;                   // When gate was opened
  bool gateAutoCloseEnabled = false;                // Auto-close timer active
  const float MIN_BALANCE_FOR_ENTRY = 10.0;         // Minimum 10 Tk balance required
@@ -279,6 +278,7 @@
  const unsigned long ALERT_CHECK_INTERVAL = 1000;      // Check alerts every 1s
  const unsigned long IR_TIMEOUT = 500;                 // Shorter IR timeout
  const unsigned long HEALTH_CHECK_INTERVAL = 10000;    // System health every 10s
+ const unsigned long GATE_AUTO_CLOSE_TIME = 10000;     // 10 seconds auto-close
  
  // Enhanced Fare Constants with Dynamic Pricing
  const float BASE_RATE_PER_KM = 5.0;
@@ -759,6 +759,8 @@
      lcd.print("Password: 12345678");
      lcd.setCursor(0, 3);
      lcd.print("System Ready!");
+     
+     setServoAngle(SERVO_CLOSE_ANGLE);
  
      delay(5000);
      setLcdLights(LIGHT_WHITE); // Normal operation mode
@@ -1239,7 +1241,8 @@
          // Close gate automatically when passenger enters
          if (gateOpen && gateAutoCloseEnabled)
          {
-             closeGate();
+             // closeGate();
+             setServoAngle(SERVO_CLOSE_ANGLE);
              gateAutoCloseEnabled = false;
              Serial.println("🚪 Gate auto-closed - passenger entered");
              addAlert("INFO", "Gate closed - passenger entered", "LOW");

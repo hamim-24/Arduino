@@ -16,7 +16,7 @@
 - limit user add 50
 - for the first time the display will show ip, pass, for 5s then turn on white led
 - system running will indicate white led
-- adjust the length in line 1132
+- adjust the length in line 1134
 - entry :
     - scan, gate open
     - ir2 trig, gate close
