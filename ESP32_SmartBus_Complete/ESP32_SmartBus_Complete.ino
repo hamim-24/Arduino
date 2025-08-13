@@ -273,7 +273,7 @@
  // Enhanced Timing Constants
  const unsigned long NFC_DEBOUNCE_TIME = 1500;         // Faster NFC response
  const unsigned long SENSOR_READ_INTERVAL = 150;       // Higher sensor refresh
- const unsigned long LCD_UPDATE_INTERVAL = 3500;       // Faster LCD updates
+ const unsigned long LCD_UPDATE_INTERVAL = 4000;       // Faster LCD updates
  const unsigned long ANALYTICS_UPDATE_INTERVAL = 5000; // Analytics every 5s
  const unsigned long ALERT_CHECK_INTERVAL = 1000;      // Check alerts every 1s
  const unsigned long IR_TIMEOUT = 500;                 // Shorter IR timeout
@@ -292,7 +292,7 @@
  const float MAX_SPEED_LIMIT = 40.0;         // km/h
  const float SPEED_WARNING_THRESHOLD = 20.0; // km/h - Enhanced: Warning at 20 km/h
  const float EMERGENCY_STOP_THRESHOLD = 5.0; // cm for emergency stop
- const int MAX_PASSENGER_LIMIT = 5;          // Enhanced: Passenger limit for red light warning
+ const int MAX_PASSENGER_LIMIT = 2;          // Enhanced: Passenger limit for red light warning
  
  // Enhanced Network Configuration
  const int maxConnections = 10; // Support multiple clients
