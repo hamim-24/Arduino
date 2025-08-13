@@ -103,7 +103,7 @@
  // Servo Motor Configuration
  #define SERVO_PIN 15 // Servo motor pin for gate control
  #define SERVO_OPEN_ANGLE 93   // Angle for open gate
- #define SERVO_CLOSE_ANGLE 173 // Angle for closed gate
+ #define SERVO_CLOSE_ANGLE 174 // Angle for closed gate
  
  // Network Configuration
  const char *ssid = "SmartBus_WiFi";
@@ -273,12 +273,12 @@
  // Enhanced Timing Constants
  const unsigned long NFC_DEBOUNCE_TIME = 1500;         // Faster NFC response
  const unsigned long SENSOR_READ_INTERVAL = 150;       // Higher sensor refresh
- const unsigned long LCD_UPDATE_INTERVAL = 2500;       // Faster LCD updates
+ const unsigned long LCD_UPDATE_INTERVAL = 3500;       // Faster LCD updates
  const unsigned long ANALYTICS_UPDATE_INTERVAL = 5000; // Analytics every 5s
  const unsigned long ALERT_CHECK_INTERVAL = 1000;      // Check alerts every 1s
  const unsigned long IR_TIMEOUT = 500;                 // Shorter IR timeout
  const unsigned long HEALTH_CHECK_INTERVAL = 10000;    // System health every 10s
- const unsigned long GATE_AUTO_CLOSE_TIME = 10000;     // 10 seconds auto-close
+ const unsigned long GATE_AUTO_CLOSE_TIME = 5000;     // 10 seconds auto-close
  
  // Enhanced Fare Constants with Dynamic Pricing
  const float BASE_RATE_PER_KM = 5.0;
