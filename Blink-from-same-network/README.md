@@ -1,5 +1,7 @@
 # 🌐 ESP32 LED Controller via Web Server (SoftAP Mode)
 
+**[YouTube Video](https://youtu.be/MZUKWzrqBG8?si=z-xyZrmUW_iHY8cv)**
+
 This project allows you to control two LEDs using your **ESP32 board** as a **Wi-Fi access point** and host a **web interface** directly—no internet required.
 
 ---
