@@ -1,5 +1,7 @@
 # ESP32 WiFi Chat with LCD Display
 
+**[YouTube Video](https://youtu.be/HzUp_aHiSuI)**
+
 This project demonstrates a simple two-way chat system between two ESP32 development boards using WiFi. Messages are sent and received over a local network, displayed on an I2C LCD, and indicated by LED lights.
 
 ## Features
