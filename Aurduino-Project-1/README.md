@@ -1,5 +1,7 @@
 # Arduino RFID & Ultrasonic Security Gate
 
+**[YouTube Video](https://youtu.be/ZN6U60bTtPA)**
+
 This project implements a simple security gate system using an Arduino, an RFID reader, an ultrasonic sensor, servo motors, an LCD display, and visual/auditory indicators. The system detects objects, verifies RFID cards, and requires a password for access, controlling a gate servo accordingly.
 
 ## Features
