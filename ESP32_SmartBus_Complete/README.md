@@ -1,5 +1,7 @@
 # ESP32 Smart Bus System - Complete IoT Solution
 
+**[YouTube Video](https://youtu.be/IAaWOxlj5Uk?si=RlyleMouVgLrwDz7)**
+
 ## 🚌 Overview
 
 The ESP32 Smart Bus System is a comprehensive, standalone IoT solution that transforms any ESP32 development board into a fully functional smart bus management system. This system integrates multiple sensors, NFC/RFID technology, web-based management, and advanced analytics to provide a complete public transportation solution.
